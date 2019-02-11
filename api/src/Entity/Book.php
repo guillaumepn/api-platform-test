@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,6 +26,8 @@ class Book
     private $reference;
 
     /**
+     * @var string Name of book
+     *
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -42,6 +46,17 @@ class Book
      * @ORM\ManyToOne(targetEntity="App\Entity\Author", inversedBy="books")
      */
     private $author_id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CopyBook", mappedBy="book_id")
+     */
+    private $copyBooks;
+
+
+    public function __construct()
+    {
+        $this->copyBooks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +119,37 @@ class Book
     public function setAuthorId(?Author $author_id): self
     {
         $this->author_id = $author_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CopyBook[]
+     */
+    public function getCopyBooks(): Collection
+    {
+        return $this->copyBooks;
+    }
+
+    public function addCopyBook(CopyBook $copyBook): self
+    {
+        if (!$this->copyBooks->contains($copyBook)) {
+            $this->copyBooks[] = $copyBook;
+            $copyBook->setBookId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCopyBook(CopyBook $copyBook): self
+    {
+        if ($this->copyBooks->contains($copyBook)) {
+            $this->copyBooks->removeElement($copyBook);
+            // set the owning side to null (unless already changed)
+            if ($copyBook->getBookId() === $this) {
+                $copyBook->setBookId(null);
+            }
+        }
 
         return $this;
     }
