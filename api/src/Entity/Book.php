@@ -6,10 +6,21 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraint as Assert;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\Constraints\TestConstraint;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     collectionOperations={
+            "get",
+ *          "post"={"validation_groups"={"Default", "postValidation"}}
+ *     },
+ *     itemOperations={
+            "delete",
+ *          "get",
+ *          "put"={"validation_groups"={"Default", "putValidation"}}
+ *     }
+ * )
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
  */
 class Book
@@ -28,6 +39,8 @@ class Book
 
     /**
      * @var string Name of book
+     * @Assert\NotBlank(groups={"postValidation"})
+     * @TestConstraint
      *
      * @ORM\Column(type="string", length=255)
      */
