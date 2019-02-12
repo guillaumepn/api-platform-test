@@ -12,11 +12,11 @@ use App\Validator\Constraints\TestConstraint;
 /**
  * @ApiResource(
  *     collectionOperations={
-            "get",
+ *          "get",
  *          "post"={"validation_groups"={"Default", "postValidation"}}
  *     },
  *     itemOperations={
-            "delete",
+ *          "delete",
  *          "get",
  *          "put"={"validation_groups"={"Default", "putValidation"}}
  *     }
